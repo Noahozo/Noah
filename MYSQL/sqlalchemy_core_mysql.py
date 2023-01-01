@@ -1,5 +1,6 @@
 #----------practice start------------
 import sqlalchemy as db
+from sqlalchemy import Column
 
 #連接資料庫
 username = 'root'  # 資料庫帳號
@@ -39,59 +40,79 @@ table_office = db.Table(table, metadata, autoload=True, autoload_with=engine)
 #     print("*" * 80)
 # print("-" * 80)
 
-# SELECT Specific Columns
+# SELECT Specific Columns (like)
 # query = db.select(table_office.c.officeCode)
-query2 = db.select([table_office.columns.job_title , table_office.columns.tools]).where(table_office.columns.tools == 'python')
+# query2 = db.select([table_office.columns.job_title , table_office.columns.tools]).where(table_office.columns.tools == 'python')
+# query3 = db.select(table_office.columns.job_title , table_office.columns.tools).filter(table_office.columns.tools.like("%python%"))
 
-proxy = connection.execute(query2)
+# proxy = connection.execute(query3)
+# results = proxy.fetchall()
+# print(results, end="\n" + ("-" * 80) + "\n")
+
+# # SELECT where
+query4 = db.select(table_office.columns.job_title, table_office.columns.tools).where(table_office.c.tools== "python")
+# proxy = connection.execute(query4)
+# results = proxy.fetchall()
+# print(results, end="\n" + ("-" * 80) + "\n")
+
+# SELECT limit & offset
+query = db.select(table_office.c.tools).limit(10).offset(1)
+proxy = connection.execute(query)
+results = proxy.fetchall()
+# print(results, end="\n" + ("-" * 80) + "\n")
+
+x='mysql'
+# SELECT limit & like 
+# query3 = db.select(table_office.columns.job_title ,
+# table_office.columns.tools).filter(table_office.columns.tools.like("%" + x + "%")).limit(10)
+
+# proxy = connection.execute(query3)
+# results = proxy.fetchall()
+# print(results, end="\n" + ("-" * 80) + "\n")
+
+# SELECT order by
+query3 = db.select([table_office]).order_by(db.desc(table_office.columns.job_title), table_office.columns.tools).limit(5).offset(2)
+
+proxy = connection.execute(query3)
+# results = proxy.fetchall()
+# print(results, end="\n" + ("-" * 80) + "\n")
+# for _ in range(5):
+#     results = proxy.fetchone()
+#     print(results)
+#     print("*" * 80)
+# print("-" * 80)
+
+# SELECT group by
+
+# query3 = db.select([db.func.sum(table_office.columns.responsibility), table_office.columns.job_title]).group_by(table_office.columns.job_title).limit(5).offset(2)
+# proxy = connection.execute(query3)
+# for _ in range(5):
+#     results = proxy.fetchone()
+#     print(results)
+#     print("*" * 80)
+# print("-" * 80)
+
+# SELECT like & like 
+query3 = db.select(table_office.columns.job_title ,
+table_office.columns.tools).filter(table_office.columns.tools.like("%" + "python" + "%")) .filter(table_office.columns.tools.like("%" + "mysql" + "%")).limit(5)
+
+proxy = connection.execute(query3)
 results = proxy.fetchall()
 print(results, end="\n" + ("-" * 80) + "\n")
 
-# # SELECT where
-# query = db.select(table_office).where(table_office.c.officeCode == "4")
-# proxy = connection.execute(query)
+#chatGPT給的答案
+# stmt = select([Column('job_title'), Column('tools')]) \
+    # .where(and_(Column('tools').like('%python%'), Column('tools').like('%mysql%'))) \
+    # .limit(5) 
+stmt = db.select([table_office.columns.job_title, table_office.columns.tools]) \
+    .where(db.and_(table_office.columns.tools.like('%python%'), table_office.columns.tools.like('%mysql%'))) \
+    .limit(5)
+
+# proxy = connection.execute(stmt)
 # results = proxy.fetchall()
 # print(results, end="\n" + ("-" * 80) + "\n")
 
-# # SELECT limit & offset
-# query = db.select(table_office).limit(2).offset(2)
-# proxy = connection.execute(query)
-# results = proxy.fetchall()
-# print(results, end="\n" + ("-" * 80) + "\n")
-
-# # INSERT
-# query = db.insert(table_office, [
-#     "8", 'Taipei', '+886 02 6631 6666',
-#     'No.390, Sec. 1, Fusing S. Rd., Da’an Dist.', 'Floor #2', None, 'ROC',
-#     '106470', 'ROC'
-# ])
-# proxy = connection.execute(query)
-
-# # UPDATE
-# query = db.update(table_office).where(table_office.c.officeCode == '5').values(
-#     addressLine2='Floor #6')
-# proxy = connection.execute(query)
-
-# # INSERT
-# floors = [
-#     'Floor #3', 'Floor #4', 'Floor #5', 'Floor #6', 'Floor #7', 'Floor #8',
-#     'Floor #9', 'Floor #10', 'Floor #11', 'Floor #12', 'Floor #13'
-# ]
-# for i, floor in enumerate(floors):
-#     query = db.insert(table_office, [
-#         str(i + 9), 'Taipei', '+886 02 6631 6666',
-#         'No.390, Sec. 1, Fusing S. Rd., Da’an Dist.', floor, None, 'ROC',
-#         '106470', 'ROC'
-#     ])
-#     proxy = connection.execute(query)
-
-# # DELETE
-# from sqlalchemy import Integer
-
-# query = db.delete(table_office).where(
-#     table_office.c.officeCode.cast(Integer) > 15)
-# proxy = connection.execute(query)
-
+# -----------------------------------
 # Close connection & engine
 connection.close()
 engine.dispose()
