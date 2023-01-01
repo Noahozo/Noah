@@ -6,7 +6,7 @@ username = 'root'  # 資料庫帳號
 password = 'Passw0rd!'  # 資料庫密碼
 host = 'localhost'  # 資料庫位址
 port = '3306'  # 資料庫埠號
-database = 'sql_tutorial'  # 資料庫名稱
+database = '****'  # 資料庫名稱
 table = 'job7'  # 表格名稱
 # 建立資料庫引擎
 engine = db.create_engine(
