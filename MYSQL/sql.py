@@ -7,12 +7,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 #連接資料庫
-username = 'test'  # 資料庫帳號
-password = 'test01'  # 資料庫密碼
-host = '192.168.31.105'  # 資料庫位址
+username = ''  # 資料庫帳號
+password = ''  # 資料庫密碼
+host = ''  # 資料庫位址
 port = '3306'  # 資料庫埠號
-database = 'sql_tutorial'  # 資料庫名稱
-table = 'job7'  # 表格名稱
+database = ''  # 資料庫名稱
+table = ''  # 表格名稱
 # 建立資料庫引擎
 engine = db.create_engine(
     f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}')
